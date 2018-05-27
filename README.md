@@ -130,6 +130,10 @@ Class | Method | HTTP request | Description
 *FileApi* | [**deletesFile**](docs/Api/FileApi.md#deletesfile) | **DELETE** /api2/v1/files/{fileUid} | Delete file
 *FileApi* | [**getFileJson**](docs/Api/FileApi.md#getfilejson) | **GET** /api2/v1/files/{fileUid} | Get file
 *FileApi* | [**getFiles**](docs/Api/FileApi.md#getfiles) | **GET** /api2/v1/files | List files
+*ImportSettingsApi* | [**createImportSettings**](docs/Api/ImportSettingsApi.md#createimportsettings) | **POST** /api2/v1/importSettings | Create import settings
+*ImportSettingsApi* | [**deleteImportSettings**](docs/Api/ImportSettingsApi.md#deleteimportsettings) | **DELETE** /api2/v1/importSettings/{uid} | Delete import settings
+*ImportSettingsApi* | [**getImportSettings**](docs/Api/ImportSettingsApi.md#getimportsettings) | **GET** /api2/v1/importSettings/{uid} | Get import settings
+*ImportSettingsApi* | [**listImportSettings**](docs/Api/ImportSettingsApi.md#listimportsettings) | **GET** /api2/v1/importSettings | List import settings
 *JobApi* | [**comparePart**](docs/Api/JobApi.md#comparepart) | **POST** /api2/v1/projects/{projectUid}/jobs/compare | Compare jobs on workflow levels
 *JobApi* | [**completedFile**](docs/Api/JobApi.md#completedfile) | **GET** /api2/v1/projects/{projectUid}/jobs/{jobUid}/targetFile | Download target file
 *JobApi* | [**createJob**](docs/Api/JobApi.md#createjob) | **POST** /api2/v1/projects/{projectUid}/jobs | Create job
@@ -160,7 +164,11 @@ Class | Method | HTTP request | Description
 *JobApi* | [**statusChanges**](docs/Api/JobApi.md#statuschanges) | **GET** /api2/v1/projects/{projectUid}/jobs/{jobUid}/statusChanges | Get status changes
 *JobApi* | [**uploadBilingualFile**](docs/Api/JobApi.md#uploadbilingualfile) | **PUT** /api2/v1/bilingualFiles | Upload bilingual file
 *JobApi* | [**wildCardSearchByJob**](docs/Api/JobApi.md#wildcardsearchbyjob) | **POST** /api2/v1/projects/{projectUid}/jobs/{jobUid}/transMemories/wildCardSearch | Wildcard search job&#39;s translation memories
+*MachineTranslationSettingsApi* | [**getList**](docs/Api/MachineTranslationSettingsApi.md#getlist) | **GET** /api2/v1/machineTranslateSettings | List machine translate settings
+*MachineTranslationSettingsApi* | [**getMTSettings**](docs/Api/MachineTranslationSettingsApi.md#getmtsettings) | **GET** /api2/v1/machineTranslateSettings/{id} | Get machine translate settings
+*MachineTranslationSettingsApi* | [**getStatus**](docs/Api/MachineTranslationSettingsApi.md#getstatus) | **GET** /api2/v1/machineTranslateSettings/{id}/status | Get status of machine translate engine
 *MachineTranslationSettingsApi* | [**getTranslationResources**](docs/Api/MachineTranslationSettingsApi.md#gettranslationresources) | **GET** /api2/v1/projects/{projectUid}/jobs/{jobUid}/translationResources | Get translation resources
+*MappingApi* | [**getMappingForTask**](docs/Api/MappingApi.md#getmappingfortask) | **GET** /api2/v1/mappings/tasks/{id} | Returns mapping for taskId (mxliff)
 *NetRateSchemeApi* | [**createDiscountScheme**](docs/Api/NetRateSchemeApi.md#creatediscountscheme) | **POST** /api2/v1/netRateSchemes | Create net rate scheme
 *NetRateSchemeApi* | [**getDiscountScheme**](docs/Api/NetRateSchemeApi.md#getdiscountscheme) | **GET** /api2/v1/netRateSchemes/{netRateSchemeId} | Get net rate scheme
 *NetRateSchemeApi* | [**getDiscountSchemeWorkflowStep**](docs/Api/NetRateSchemeApi.md#getdiscountschemeworkflowstep) | **GET** /api2/v1/netRateSchemes/{netRateSchemeId}/workflowStepNetSchemes/{netRateSchemeWorkflowStepId} | Get scheme for workflow step
@@ -236,6 +244,7 @@ Class | Method | HTTP request | Description
 *SubDomainApi* | [**getSubDomain**](docs/Api/SubDomainApi.md#getsubdomain) | **GET** /api2/v1/subDomains/{subDomainId} | Get subdomain
 *SubDomainApi* | [**listSubDomains**](docs/Api/SubDomainApi.md#listsubdomains) | **GET** /api2/v1/subDomains | List subdomains
 *SubDomainApi* | [**updateSubDomain**](docs/Api/SubDomainApi.md#updatesubdomain) | **PUT** /api2/v1/subDomains/{subDomainId} | Edit subdomain
+*SupportedLanguagesApi* | [**listOfLanguages**](docs/Api/SupportedLanguagesApi.md#listoflanguages) | **GET** /api2/v1/languages | List supported languages
 *TermBaseApi* | [**browseTerms**](docs/Api/TermBaseApi.md#browseterms) | **POST** /api2/v1/termBases/{termBaseId}/browse | Browse term base
 *TermBaseApi* | [**clearTermBase**](docs/Api/TermBaseApi.md#cleartermbase) | **DELETE** /api2/v1/termBases/{termBaseId}/terms | Clear term base
 *TermBaseApi* | [**createTerm**](docs/Api/TermBaseApi.md#createterm) | **POST** /api2/v1/termBases/{termBaseId}/terms | Create term

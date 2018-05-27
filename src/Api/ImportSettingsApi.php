@@ -1,6 +1,6 @@
 <?php
 /**
- * MachineTranslationSettingsApi
+ * ImportSettingsApi
  * PHP version 5
  *
  * @category Class
@@ -40,14 +40,14 @@ use Memsource\HeaderSelector;
 use Memsource\ObjectSerializer;
 
 /**
- * MachineTranslationSettingsApi Class Doc Comment
+ * ImportSettingsApi Class Doc Comment
  *
  * @category Class
  * @package  Memsource
  * @author   Swagger Codegen team
  * @link     https://github.com/swagger-api/swagger-codegen
  */
-class MachineTranslationSettingsApi
+class ImportSettingsApi
 {
     /**
      * @var ClientInterface
@@ -83,39 +83,513 @@ class MachineTranslationSettingsApi
     }
 
     /**
-     * Operation getList
+     * Operation createImportSettings
      *
-     * List machine translate settings
+     * Create import settings
      *
-     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
-     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     * @param  \Memsource\Model\ImportSettingsCreateDto $body body (optional)
      *
      * @throws \Memsource\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Memsource\Model\PageDtoMachineTranslateSettingsPbmDto
+     * @return \Memsource\Model\ImportSettingsDto
      */
-    public function getList($pageNumber = '0', $pageSize = '50')
+    public function createImportSettings($body = null)
     {
-        list($response) = $this->getListWithHttpInfo($pageNumber, $pageSize);
+        list($response) = $this->createImportSettingsWithHttpInfo($body);
         return $response;
     }
 
     /**
-     * Operation getListWithHttpInfo
+     * Operation createImportSettingsWithHttpInfo
      *
-     * List machine translate settings
+     * Create import settings
      *
-     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
-     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     * @param  \Memsource\Model\ImportSettingsCreateDto $body (optional)
      *
      * @throws \Memsource\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Memsource\Model\PageDtoMachineTranslateSettingsPbmDto, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Memsource\Model\ImportSettingsDto, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getListWithHttpInfo($pageNumber = '0', $pageSize = '50')
+    public function createImportSettingsWithHttpInfo($body = null)
     {
-        $returnType = '\Memsource\Model\PageDtoMachineTranslateSettingsPbmDto';
-        $request = $this->getListRequest($pageNumber, $pageSize);
+        $returnType = '\Memsource\Model\ImportSettingsDto';
+        $request = $this->createImportSettingsRequest($body);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    $response->getBody()
+                );
+            }
+
+            $responseBody = $response->getBody();
+            if ($returnType === '\SplFileObject') {
+                $content = $responseBody; //stream goes to serializer
+            } else {
+                $content = $responseBody->getContents();
+                if ($returnType !== 'string') {
+                    $content = json_decode($content);
+                }
+            }
+
+            return [
+                ObjectSerializer::deserialize($content, $returnType, []),
+                $response->getStatusCode(),
+                $response->getHeaders()
+            ];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 201:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Memsource\Model\ImportSettingsDto',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation createImportSettingsAsync
+     *
+     * Create import settings
+     *
+     * @param  \Memsource\Model\ImportSettingsCreateDto $body (optional)
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function createImportSettingsAsync($body = null)
+    {
+        return $this->createImportSettingsAsyncWithHttpInfo($body)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation createImportSettingsAsyncWithHttpInfo
+     *
+     * Create import settings
+     *
+     * @param  \Memsource\Model\ImportSettingsCreateDto $body (optional)
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function createImportSettingsAsyncWithHttpInfo($body = null)
+    {
+        $returnType = '\Memsource\Model\ImportSettingsDto';
+        $request = $this->createImportSettingsRequest($body);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    $responseBody = $response->getBody();
+                    if ($returnType === '\SplFileObject') {
+                        $content = $responseBody; //stream goes to serializer
+                    } else {
+                        $content = $responseBody->getContents();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'createImportSettings'
+     *
+     * @param  \Memsource\Model\ImportSettingsCreateDto $body (optional)
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    protected function createImportSettingsRequest($body = null)
+    {
+
+        $resourcePath = '/api2/v1/importSettings';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // body params
+        $_tempBody = null;
+        if (isset($body)) {
+            $_tempBody = $body;
+        }
+
+        if ($multipart) {
+            $headers = $this->headerSelector->selectHeadersForMultipart(
+                ['application/json']
+            );
+        } else {
+            $headers = $this->headerSelector->selectHeaders(
+                ['application/json'],
+                ['application/json']
+            );
+        }
+
+        // for model (json/xml)
+        if (isset($_tempBody)) {
+            // $_tempBody is the method argument, if present
+            $httpBody = $_tempBody;
+            // \stdClass has no __toString(), so we should encode it manually
+            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
+                $httpBody = \GuzzleHttp\json_encode($httpBody);
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $multipartContents[] = [
+                        'name' => $formParamName,
+                        'contents' => $formParamValue
+                    ];
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif ($headers['Content-Type'] === 'application/json') {
+                $httpBody = \GuzzleHttp\json_encode($formParams);
+
+            } else {
+                // for HTTP post (form)
+                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
+            }
+        }
+
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $query = \GuzzleHttp\Psr7\build_query($queryParams);
+        return new Request(
+            'POST',
+            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation deleteImportSettings
+     *
+     * Delete import settings
+     *
+     * @param  string $uid uid (required)
+     *
+     * @throws \Memsource\ApiException on non-2xx response
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function deleteImportSettings($uid)
+    {
+        $this->deleteImportSettingsWithHttpInfo($uid);
+    }
+
+    /**
+     * Operation deleteImportSettingsWithHttpInfo
+     *
+     * Delete import settings
+     *
+     * @param  string $uid (required)
+     *
+     * @throws \Memsource\ApiException on non-2xx response
+     * @throws \InvalidArgumentException
+     * @return array of null, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function deleteImportSettingsWithHttpInfo($uid)
+    {
+        $returnType = '';
+        $request = $this->deleteImportSettingsRequest($uid);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    $response->getBody()
+                );
+            }
+
+            return [null, $statusCode, $response->getHeaders()];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation deleteImportSettingsAsync
+     *
+     * Delete import settings
+     *
+     * @param  string $uid (required)
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function deleteImportSettingsAsync($uid)
+    {
+        return $this->deleteImportSettingsAsyncWithHttpInfo($uid)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation deleteImportSettingsAsyncWithHttpInfo
+     *
+     * Delete import settings
+     *
+     * @param  string $uid (required)
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function deleteImportSettingsAsyncWithHttpInfo($uid)
+    {
+        $returnType = '';
+        $request = $this->deleteImportSettingsRequest($uid);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    return [null, $response->getStatusCode(), $response->getHeaders()];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'deleteImportSettings'
+     *
+     * @param  string $uid (required)
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    protected function deleteImportSettingsRequest($uid)
+    {
+        // verify the required parameter 'uid' is set
+        if ($uid === null) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $uid when calling deleteImportSettings'
+            );
+        }
+
+        $resourcePath = '/api2/v1/importSettings/{uid}';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+        // path params
+        if ($uid !== null) {
+            $resourcePath = str_replace(
+                '{' . 'uid' . '}',
+                ObjectSerializer::toPathValue($uid),
+                $resourcePath
+            );
+        }
+
+        // body params
+        $_tempBody = null;
+
+        if ($multipart) {
+            $headers = $this->headerSelector->selectHeadersForMultipart(
+                []
+            );
+        } else {
+            $headers = $this->headerSelector->selectHeaders(
+                [],
+                []
+            );
+        }
+
+        // for model (json/xml)
+        if (isset($_tempBody)) {
+            // $_tempBody is the method argument, if present
+            $httpBody = $_tempBody;
+            // \stdClass has no __toString(), so we should encode it manually
+            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
+                $httpBody = \GuzzleHttp\json_encode($httpBody);
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $multipartContents[] = [
+                        'name' => $formParamName,
+                        'contents' => $formParamValue
+                    ];
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif ($headers['Content-Type'] === 'application/json') {
+                $httpBody = \GuzzleHttp\json_encode($formParams);
+
+            } else {
+                // for HTTP post (form)
+                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
+            }
+        }
+
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $query = \GuzzleHttp\Psr7\build_query($queryParams);
+        return new Request(
+            'DELETE',
+            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation getImportSettings
+     *
+     * Get import settings
+     *
+     * @param  string $uid uid (required)
+     *
+     * @throws \Memsource\ApiException on non-2xx response
+     * @throws \InvalidArgumentException
+     * @return \Memsource\Model\ImportSettingsDto
+     */
+    public function getImportSettings($uid)
+    {
+        list($response) = $this->getImportSettingsWithHttpInfo($uid);
+        return $response;
+    }
+
+    /**
+     * Operation getImportSettingsWithHttpInfo
+     *
+     * Get import settings
+     *
+     * @param  string $uid (required)
+     *
+     * @throws \Memsource\ApiException on non-2xx response
+     * @throws \InvalidArgumentException
+     * @return array of \Memsource\Model\ImportSettingsDto, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function getImportSettingsWithHttpInfo($uid)
+    {
+        $returnType = '\Memsource\Model\ImportSettingsDto';
+        $request = $this->getImportSettingsRequest($uid);
 
         try {
             $options = $this->createHttpClientOption();
@@ -166,7 +640,7 @@ class MachineTranslationSettingsApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Memsource\Model\PageDtoMachineTranslateSettingsPbmDto',
+                        '\Memsource\Model\ImportSettingsDto',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -177,19 +651,18 @@ class MachineTranslationSettingsApi
     }
 
     /**
-     * Operation getListAsync
+     * Operation getImportSettingsAsync
      *
-     * List machine translate settings
+     * Get import settings
      *
-     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
-     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     * @param  string $uid (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getListAsync($pageNumber = '0', $pageSize = '50')
+    public function getImportSettingsAsync($uid)
     {
-        return $this->getListAsyncWithHttpInfo($pageNumber, $pageSize)
+        return $this->getImportSettingsAsyncWithHttpInfo($uid)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -198,20 +671,19 @@ class MachineTranslationSettingsApi
     }
 
     /**
-     * Operation getListAsyncWithHttpInfo
+     * Operation getImportSettingsAsyncWithHttpInfo
      *
-     * List machine translate settings
+     * Get import settings
      *
-     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
-     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     * @param  string $uid (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getListAsyncWithHttpInfo($pageNumber = '0', $pageSize = '50')
+    public function getImportSettingsAsyncWithHttpInfo($uid)
     {
-        $returnType = '\Memsource\Model\PageDtoMachineTranslateSettingsPbmDto';
-        $request = $this->getListRequest($pageNumber, $pageSize);
+        $returnType = '\Memsource\Model\ImportSettingsDto';
+        $request = $this->getImportSettingsRequest($uid);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -251,35 +723,310 @@ class MachineTranslationSettingsApi
     }
 
     /**
-     * Create request for operation 'getList'
+     * Create request for operation 'getImportSettings'
      *
-     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
-     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     * @param  string $uid (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function getListRequest($pageNumber = '0', $pageSize = '50')
+    protected function getImportSettingsRequest($uid)
     {
-        if ($pageNumber !== null && $pageNumber < 0) {
-            throw new \InvalidArgumentException('invalid value for "$pageNumber" when calling MachineTranslationSettingsApi.getList, must be bigger than or equal to 0.');
+        // verify the required parameter 'uid' is set
+        if ($uid === null) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $uid when calling getImportSettings'
+            );
         }
 
-        if ($pageSize !== null && $pageSize > 50) {
-            throw new \InvalidArgumentException('invalid value for "$pageSize" when calling MachineTranslationSettingsApi.getList, must be smaller than or equal to 50.');
-        }
-        if ($pageSize !== null && $pageSize < 1) {
-            throw new \InvalidArgumentException('invalid value for "$pageSize" when calling MachineTranslationSettingsApi.getList, must be bigger than or equal to 1.');
-        }
-
-
-        $resourcePath = '/api2/v1/machineTranslateSettings';
+        $resourcePath = '/api2/v1/importSettings/{uid}';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
         $multipart = false;
 
+
+        // path params
+        if ($uid !== null) {
+            $resourcePath = str_replace(
+                '{' . 'uid' . '}',
+                ObjectSerializer::toPathValue($uid),
+                $resourcePath
+            );
+        }
+
+        // body params
+        $_tempBody = null;
+
+        if ($multipart) {
+            $headers = $this->headerSelector->selectHeadersForMultipart(
+                ['application/json']
+            );
+        } else {
+            $headers = $this->headerSelector->selectHeaders(
+                ['application/json'],
+                []
+            );
+        }
+
+        // for model (json/xml)
+        if (isset($_tempBody)) {
+            // $_tempBody is the method argument, if present
+            $httpBody = $_tempBody;
+            // \stdClass has no __toString(), so we should encode it manually
+            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
+                $httpBody = \GuzzleHttp\json_encode($httpBody);
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $multipartContents[] = [
+                        'name' => $formParamName,
+                        'contents' => $formParamValue
+                    ];
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif ($headers['Content-Type'] === 'application/json') {
+                $httpBody = \GuzzleHttp\json_encode($formParams);
+
+            } else {
+                // for HTTP post (form)
+                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
+            }
+        }
+
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $query = \GuzzleHttp\Psr7\build_query($queryParams);
+        return new Request(
+            'GET',
+            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation listImportSettings
+     *
+     * List import settings
+     *
+     * @param  string $name name (optional)
+     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
+     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     *
+     * @throws \Memsource\ApiException on non-2xx response
+     * @throws \InvalidArgumentException
+     * @return \Memsource\Model\PageDtoImportSettingsReference
+     */
+    public function listImportSettings($name = null, $pageNumber = '0', $pageSize = '50')
+    {
+        list($response) = $this->listImportSettingsWithHttpInfo($name, $pageNumber, $pageSize);
+        return $response;
+    }
+
+    /**
+     * Operation listImportSettingsWithHttpInfo
+     *
+     * List import settings
+     *
+     * @param  string $name (optional)
+     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
+     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     *
+     * @throws \Memsource\ApiException on non-2xx response
+     * @throws \InvalidArgumentException
+     * @return array of \Memsource\Model\PageDtoImportSettingsReference, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function listImportSettingsWithHttpInfo($name = null, $pageNumber = '0', $pageSize = '50')
+    {
+        $returnType = '\Memsource\Model\PageDtoImportSettingsReference';
+        $request = $this->listImportSettingsRequest($name, $pageNumber, $pageSize);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    $response->getBody()
+                );
+            }
+
+            $responseBody = $response->getBody();
+            if ($returnType === '\SplFileObject') {
+                $content = $responseBody; //stream goes to serializer
+            } else {
+                $content = $responseBody->getContents();
+                if ($returnType !== 'string') {
+                    $content = json_decode($content);
+                }
+            }
+
+            return [
+                ObjectSerializer::deserialize($content, $returnType, []),
+                $response->getStatusCode(),
+                $response->getHeaders()
+            ];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Memsource\Model\PageDtoImportSettingsReference',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation listImportSettingsAsync
+     *
+     * List import settings
+     *
+     * @param  string $name (optional)
+     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
+     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function listImportSettingsAsync($name = null, $pageNumber = '0', $pageSize = '50')
+    {
+        return $this->listImportSettingsAsyncWithHttpInfo($name, $pageNumber, $pageSize)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation listImportSettingsAsyncWithHttpInfo
+     *
+     * List import settings
+     *
+     * @param  string $name (optional)
+     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
+     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function listImportSettingsAsyncWithHttpInfo($name = null, $pageNumber = '0', $pageSize = '50')
+    {
+        $returnType = '\Memsource\Model\PageDtoImportSettingsReference';
+        $request = $this->listImportSettingsRequest($name, $pageNumber, $pageSize);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    $responseBody = $response->getBody();
+                    if ($returnType === '\SplFileObject') {
+                        $content = $responseBody; //stream goes to serializer
+                    } else {
+                        $content = $responseBody->getContents();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'listImportSettings'
+     *
+     * @param  string $name (optional)
+     * @param  int $pageNumber Page number, starting with 0, default 0 (optional, default to 0)
+     * @param  int $pageSize Page size, accepts values between 1 and 50, default 50 (optional, default to 50)
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    protected function listImportSettingsRequest($name = null, $pageNumber = '0', $pageSize = '50')
+    {
+        if ($pageNumber !== null && $pageNumber < 0) {
+            throw new \InvalidArgumentException('invalid value for "$pageNumber" when calling ImportSettingsApi.listImportSettings, must be bigger than or equal to 0.');
+        }
+
+        if ($pageSize !== null && $pageSize > 50) {
+            throw new \InvalidArgumentException('invalid value for "$pageSize" when calling ImportSettingsApi.listImportSettings, must be smaller than or equal to 50.');
+        }
+        if ($pageSize !== null && $pageSize < 1) {
+            throw new \InvalidArgumentException('invalid value for "$pageSize" when calling ImportSettingsApi.listImportSettings, must be bigger than or equal to 1.');
+        }
+
+
+        $resourcePath = '/api2/v1/importSettings';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+        // query params
+        if ($name !== null) {
+            $queryParams['name'] = ObjectSerializer::toQueryValue($name);
+        }
         // query params
         if ($pageNumber !== null) {
             $queryParams['pageNumber'] = ObjectSerializer::toQueryValue($pageNumber);
@@ -300,811 +1047,6 @@ class MachineTranslationSettingsApi
         } else {
             $headers = $this->headerSelector->selectHeaders(
                 ['application/json'],
-                []
-            );
-        }
-
-        // for model (json/xml)
-        if (isset($_tempBody)) {
-            // $_tempBody is the method argument, if present
-            $httpBody = $_tempBody;
-            // \stdClass has no __toString(), so we should encode it manually
-            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($httpBody);
-            }
-        } elseif (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $multipartContents[] = [
-                        'name' => $formParamName,
-                        'contents' => $formParamValue
-                    ];
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif ($headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($formParams);
-
-            } else {
-                // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
-            }
-        }
-
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
-        return new Request(
-            'GET',
-            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation getMTSettings
-     *
-     * Get machine translate settings
-     *
-     * @param  int $id id (required)
-     *
-     * @throws \Memsource\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return \Memsource\Model\MachineTranslateSettingsPbmDto
-     */
-    public function getMTSettings($id)
-    {
-        list($response) = $this->getMTSettingsWithHttpInfo($id);
-        return $response;
-    }
-
-    /**
-     * Operation getMTSettingsWithHttpInfo
-     *
-     * Get machine translate settings
-     *
-     * @param  int $id (required)
-     *
-     * @throws \Memsource\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return array of \Memsource\Model\MachineTranslateSettingsPbmDto, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function getMTSettingsWithHttpInfo($id)
-    {
-        $returnType = '\Memsource\Model\MachineTranslateSettingsPbmDto';
-        $request = $this->getMTSettingsRequest($id);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    $response->getBody()
-                );
-            }
-
-            $responseBody = $response->getBody();
-            if ($returnType === '\SplFileObject') {
-                $content = $responseBody; //stream goes to serializer
-            } else {
-                $content = $responseBody->getContents();
-                if ($returnType !== 'string') {
-                    $content = json_decode($content);
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-                case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Memsource\Model\MachineTranslateSettingsPbmDto',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation getMTSettingsAsync
-     *
-     * Get machine translate settings
-     *
-     * @param  int $id (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getMTSettingsAsync($id)
-    {
-        return $this->getMTSettingsAsyncWithHttpInfo($id)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation getMTSettingsAsyncWithHttpInfo
-     *
-     * Get machine translate settings
-     *
-     * @param  int $id (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getMTSettingsAsyncWithHttpInfo($id)
-    {
-        $returnType = '\Memsource\Model\MachineTranslateSettingsPbmDto';
-        $request = $this->getMTSettingsRequest($id);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    $responseBody = $response->getBody();
-                    if ($returnType === '\SplFileObject') {
-                        $content = $responseBody; //stream goes to serializer
-                    } else {
-                        $content = $responseBody->getContents();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'getMTSettings'
-     *
-     * @param  int $id (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    protected function getMTSettingsRequest($id)
-    {
-        // verify the required parameter 'id' is set
-        if ($id === null) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $id when calling getMTSettings'
-            );
-        }
-
-        $resourcePath = '/api2/v1/machineTranslateSettings/{id}';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-        // path params
-        if ($id !== null) {
-            $resourcePath = str_replace(
-                '{' . 'id' . '}',
-                ObjectSerializer::toPathValue($id),
-                $resourcePath
-            );
-        }
-
-        // body params
-        $_tempBody = null;
-
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json'],
-                []
-            );
-        }
-
-        // for model (json/xml)
-        if (isset($_tempBody)) {
-            // $_tempBody is the method argument, if present
-            $httpBody = $_tempBody;
-            // \stdClass has no __toString(), so we should encode it manually
-            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($httpBody);
-            }
-        } elseif (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $multipartContents[] = [
-                        'name' => $formParamName,
-                        'contents' => $formParamValue
-                    ];
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif ($headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($formParams);
-
-            } else {
-                // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
-            }
-        }
-
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
-        return new Request(
-            'GET',
-            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation getStatus
-     *
-     * Get status of machine translate engine
-     *
-     * @param  int $id id (required)
-     *
-     * @throws \Memsource\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return \Memsource\Model\MachineTranslateStatusDto
-     */
-    public function getStatus($id)
-    {
-        list($response) = $this->getStatusWithHttpInfo($id);
-        return $response;
-    }
-
-    /**
-     * Operation getStatusWithHttpInfo
-     *
-     * Get status of machine translate engine
-     *
-     * @param  int $id (required)
-     *
-     * @throws \Memsource\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return array of \Memsource\Model\MachineTranslateStatusDto, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function getStatusWithHttpInfo($id)
-    {
-        $returnType = '\Memsource\Model\MachineTranslateStatusDto';
-        $request = $this->getStatusRequest($id);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    $response->getBody()
-                );
-            }
-
-            $responseBody = $response->getBody();
-            if ($returnType === '\SplFileObject') {
-                $content = $responseBody; //stream goes to serializer
-            } else {
-                $content = $responseBody->getContents();
-                if ($returnType !== 'string') {
-                    $content = json_decode($content);
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-                case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Memsource\Model\MachineTranslateStatusDto',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation getStatusAsync
-     *
-     * Get status of machine translate engine
-     *
-     * @param  int $id (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getStatusAsync($id)
-    {
-        return $this->getStatusAsyncWithHttpInfo($id)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation getStatusAsyncWithHttpInfo
-     *
-     * Get status of machine translate engine
-     *
-     * @param  int $id (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getStatusAsyncWithHttpInfo($id)
-    {
-        $returnType = '\Memsource\Model\MachineTranslateStatusDto';
-        $request = $this->getStatusRequest($id);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    $responseBody = $response->getBody();
-                    if ($returnType === '\SplFileObject') {
-                        $content = $responseBody; //stream goes to serializer
-                    } else {
-                        $content = $responseBody->getContents();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'getStatus'
-     *
-     * @param  int $id (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    protected function getStatusRequest($id)
-    {
-        // verify the required parameter 'id' is set
-        if ($id === null) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $id when calling getStatus'
-            );
-        }
-
-        $resourcePath = '/api2/v1/machineTranslateSettings/{id}/status';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-        // path params
-        if ($id !== null) {
-            $resourcePath = str_replace(
-                '{' . 'id' . '}',
-                ObjectSerializer::toPathValue($id),
-                $resourcePath
-            );
-        }
-
-        // body params
-        $_tempBody = null;
-
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json'],
-                []
-            );
-        }
-
-        // for model (json/xml)
-        if (isset($_tempBody)) {
-            // $_tempBody is the method argument, if present
-            $httpBody = $_tempBody;
-            // \stdClass has no __toString(), so we should encode it manually
-            if ($httpBody instanceof \stdClass && $headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($httpBody);
-            }
-        } elseif (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $multipartContents[] = [
-                        'name' => $formParamName,
-                        'contents' => $formParamValue
-                    ];
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif ($headers['Content-Type'] === 'application/json') {
-                $httpBody = \GuzzleHttp\json_encode($formParams);
-
-            } else {
-                // for HTTP post (form)
-                $httpBody = \GuzzleHttp\Psr7\build_query($formParams);
-            }
-        }
-
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $query = \GuzzleHttp\Psr7\build_query($queryParams);
-        return new Request(
-            'GET',
-            $this->config->getHost() . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation getTranslationResources
-     *
-     * Get translation resources
-     *
-     * @param  string $projectUid projectUid (required)
-     * @param  string $jobUid jobUid (required)
-     *
-     * @throws \Memsource\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return \Memsource\Model\TranslationResourcesDto
-     */
-    public function getTranslationResources($projectUid, $jobUid)
-    {
-        list($response) = $this->getTranslationResourcesWithHttpInfo($projectUid, $jobUid);
-        return $response;
-    }
-
-    /**
-     * Operation getTranslationResourcesWithHttpInfo
-     *
-     * Get translation resources
-     *
-     * @param  string $projectUid (required)
-     * @param  string $jobUid (required)
-     *
-     * @throws \Memsource\ApiException on non-2xx response
-     * @throws \InvalidArgumentException
-     * @return array of \Memsource\Model\TranslationResourcesDto, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function getTranslationResourcesWithHttpInfo($projectUid, $jobUid)
-    {
-        $returnType = '\Memsource\Model\TranslationResourcesDto';
-        $request = $this->getTranslationResourcesRequest($projectUid, $jobUid);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? $e->getResponse()->getBody()->getContents() : null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    $response->getBody()
-                );
-            }
-
-            $responseBody = $response->getBody();
-            if ($returnType === '\SplFileObject') {
-                $content = $responseBody; //stream goes to serializer
-            } else {
-                $content = $responseBody->getContents();
-                if ($returnType !== 'string') {
-                    $content = json_decode($content);
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-                case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Memsource\Model\TranslationResourcesDto',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation getTranslationResourcesAsync
-     *
-     * Get translation resources
-     *
-     * @param  string $projectUid (required)
-     * @param  string $jobUid (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getTranslationResourcesAsync($projectUid, $jobUid)
-    {
-        return $this->getTranslationResourcesAsyncWithHttpInfo($projectUid, $jobUid)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation getTranslationResourcesAsyncWithHttpInfo
-     *
-     * Get translation resources
-     *
-     * @param  string $projectUid (required)
-     * @param  string $jobUid (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function getTranslationResourcesAsyncWithHttpInfo($projectUid, $jobUid)
-    {
-        $returnType = '\Memsource\Model\TranslationResourcesDto';
-        $request = $this->getTranslationResourcesRequest($projectUid, $jobUid);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    $responseBody = $response->getBody();
-                    if ($returnType === '\SplFileObject') {
-                        $content = $responseBody; //stream goes to serializer
-                    } else {
-                        $content = $responseBody->getContents();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'getTranslationResources'
-     *
-     * @param  string $projectUid (required)
-     * @param  string $jobUid (required)
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    protected function getTranslationResourcesRequest($projectUid, $jobUid)
-    {
-        // verify the required parameter 'projectUid' is set
-        if ($projectUid === null) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $projectUid when calling getTranslationResources'
-            );
-        }
-        // verify the required parameter 'jobUid' is set
-        if ($jobUid === null) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $jobUid when calling getTranslationResources'
-            );
-        }
-
-        $resourcePath = '/api2/v1/projects/{projectUid}/jobs/{jobUid}/translationResources';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-        // path params
-        if ($projectUid !== null) {
-            $resourcePath = str_replace(
-                '{' . 'projectUid' . '}',
-                ObjectSerializer::toPathValue($projectUid),
-                $resourcePath
-            );
-        }
-        // path params
-        if ($jobUid !== null) {
-            $resourcePath = str_replace(
-                '{' . 'jobUid' . '}',
-                ObjectSerializer::toPathValue($jobUid),
-                $resourcePath
-            );
-        }
-
-        // body params
-        $_tempBody = null;
-
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                []
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                [],
                 []
             );
         }
